@@ -1,7 +1,7 @@
 <template>
 <div>
   <button @click="openPopup">Открыть окно</button>
-  <Popup
+  <Popup ref="confirmationPopup"
     :is-open="isPopupOpen"
     @ok="popupConfirmed"
     @close="isPopupOpen = false"
@@ -10,7 +10,7 @@
     во Vue?
 <template #actions="{ confirm }">
   Напишите <input :placeholder="$options.CONFIRMATION_TEXT" v-model="confirmation"/>&nbsp;
-  <button @click="confirm" :disabled="!isConfirmationCorrect">OK</button>
+  <button @click="confirm" :disabled="isConfirmationCorrect">OK</button>
 </template>
   </Popup>
   </div>
@@ -21,7 +21,7 @@ import Popup from "./components/Popup.vue";
 export default {
   components: { Popup },
   data() {
-    return { isPopupOpen: false, confirmation: "" };
+    return {  confirmation: "" };
   },
   computed:{
 isConfirmationCorrect(){
@@ -33,9 +33,13 @@ CONFIRMATION_TEXT: "ПОДТВЕРЖДАЮ",
 
   
   methods: {
-    openPopup() {
-      this.confirmation = "";
-      this.isPopupOpen = true;
+   async openPopup() {
+     const popupResult = await this.$refs.confirmationPopup.open()
+    //  magicallyOpenPopup()
+     if(popupResult){
+       alert("confirmed!")
+     }
+
     },
 
     popupConfirmed() {

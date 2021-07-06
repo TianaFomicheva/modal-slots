@@ -18,16 +18,11 @@
 
 <script>
 export default {
-  props: {
-    isOpen: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  emits: {
-    ok: null,
-    close: null,
-  },
+data(){
+  return {
+    isOpen: false
+  }
+},
 
   mounted() {
     document.addEventListener("keydown",this.handleKeydown)
@@ -36,7 +31,7 @@ export default {
     document.removeEventListener("keydown",this.handleKeydown)
   },
   
-
+currentPopupController: null,
   methods: {
     handleKeydown(e) {
       if (this.isOpen && e.key === "Escape") {
@@ -45,10 +40,23 @@ export default {
     },
 
     close() {
-      this.$emit("close");
+      this.isOpen = false;
+      this.$options.currentPopupController.resolve(false)
+    },
+    open() {
+      let resolve
+      let reject
+      const popupPromise = new Promise((ok,fail)=>{
+        resolve = ok;
+        reject = fail;
+      })
+      this.$options.currentPopupController = {resolve, reject}
+      this.isOpen = true;
+      return popupPromise
     },
     confirm() {
-      this.$emit("ok");
+     this.isOpen = false;
+     this.$options.currentPopupController.resolve(true)
     },
   },
 };
