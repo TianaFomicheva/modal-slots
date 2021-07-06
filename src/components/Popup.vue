@@ -6,9 +6,11 @@
       <slot></slot>
       <hr />
       <div class="footer">
+        <slot name="actions"  :close="close" :confirm="confirm">
         <button @click="close">Отмена</button>
         &nbsp;
         <button @click="confirm">Ok</button>
+        </slot>
       </div>
     </div>
   </div>
@@ -28,14 +30,10 @@ export default {
   },
 
   mounted() {
-    document.addEventListener("keydown",(e)=>{
-      if(this.isOpen && e.key === 'Escape'){this.isOpen = false}
-    })
+    document.addEventListener("keydown",this.handleKeydown)
   },
   beforeUnmount() {
-    document.removeEventListener("keydown",(e)=>{
-      if(this.isOpen && e.key === 'Escape'){this.isOpen = false}
-    })
+    document.removeEventListener("keydown",this.handleKeydown)
   },
   
 
